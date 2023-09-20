@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,9 +10,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private LevelData level;
     [SerializeField] private Pipe cellPrefab;
 
+    private int currentLevelIndex = 0;
     private bool gameFinished;
     private Pipe[,] pipes;
     private List<Pipe> startPipes;
+
+    public string[] levelScenes = {
+        "Level_1",
+        "Level_2"
+    };
+
 
     private void Awake()
     {
@@ -25,16 +33,16 @@ public class GameManager : MonoBehaviour
         pipes = new Pipe[level.Row, level.Column];
         startPipes = new List<Pipe>();
 
-        for(int i = 0; i < level.Row; i++)
+        for (int i = 0; i < level.Row; i++)
         {
-            for(int j = 0; j < level.Column; j++)
+            for (int j = 0; j < level.Column; j++)
             {
                 Vector2 spawnPos = new Vector2(j + 0.5f, i + 0.5f);
                 Pipe tempPipe = Instantiate(cellPrefab);
                 tempPipe.transform.position = spawnPos;
                 tempPipe.Init(level.Data[i * level.Column + j]);
-                pipes[i,j] = tempPipe;
-                if(tempPipe.pipeType == 1)
+                pipes[i, j] = tempPipe;
+                if (tempPipe.pipeType == 1)
                 {
                     startPipes.Add(tempPipe);
                 }
@@ -59,7 +67,7 @@ public class GameManager : MonoBehaviour
         int row = Mathf.FloorToInt(mousePos.y);
         int col = Mathf.FloorToInt(mousePos.x);
 
-        if(row < 0 || col < 0)
+        if (row < 0 || col < 0)
         {
             return;
         }
@@ -69,7 +77,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if(col >= level.Column)
+        if (col >= level.Column)
         {
             return;
         }
@@ -95,7 +103,7 @@ public class GameManager : MonoBehaviour
             for (int j = 0; j < level.Column; j++)
             {
                 Pipe tempPipe = pipes[i, j];
-                if(tempPipe.pipeType != 0)
+                if (tempPipe.pipeType != 0)
                 {
                     tempPipe.isFilled = false;
                 }
@@ -103,17 +111,17 @@ public class GameManager : MonoBehaviour
         }
         Queue<Pipe> check = new Queue<Pipe>();
         HashSet<Pipe> finished = new HashSet<Pipe>();
-        foreach(var pipe in startPipes)
+        foreach (var pipe in startPipes)
         {
             check.Enqueue(pipe);
         }
 
-        while(check.Count > 0)
+        while (check.Count > 0)
         {
             Pipe pipe = check.Dequeue();
             finished.Add(pipe);
             List<Pipe> connected = pipe.ConnectedPipes();
-            foreach(var connectedPipe in connected)
+            foreach (var connectedPipe in connected)
             {
                 if (!finished.Contains(connectedPipe))
                 {
@@ -122,7 +130,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        foreach(var filled in finished)
+        foreach (var filled in finished)
         {
             filled.isFilled = true;
         }
@@ -141,9 +149,9 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < level.Row; i++)
         {
-            for(int j = 0; j < level.Column; j++)
+            for (int j = 0; j < level.Column; j++)
             {
-                if(!pipes[i,j].isFilled)
+                if (!pipes[i, j].isFilled)
                 {
                     return;
                 }
@@ -157,6 +165,16 @@ public class GameManager : MonoBehaviour
     private IEnumerator FinishGame()
     {
         yield return new WaitForSeconds(2f);
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+
+        if (currentLevelIndex < levelScenes.Length - 1)
+        {
+            currentLevelIndex++;
+            SceneManager.LoadScene(levelScenes[currentLevelIndex]);
+        }
+        else
+        {
+            SceneManager.LoadScene(0);
+        }
+
     }
 }
