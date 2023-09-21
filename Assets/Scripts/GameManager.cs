@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         scoreManager = new ScoreManager();
         SpawnLevel();
 
+        /*
         if (FindObjectsOfType<GameManager>().Length > 1)
         {
             Destroy(gameObject);
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
         }
+        */
     }
 
     private void SpawnLevel()
