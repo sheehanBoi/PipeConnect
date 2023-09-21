@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     private bool gameFinished;
     private Pipe[,] pipes;
     private List<Pipe> startPipes;
+    private ScoreManager scoreManager;
 
     public string[] levelScenes = {
         "Level_1",
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         gameFinished = false;
+        scoreManager = new ScoreManager();
         SpawnLevel();
     }
 
@@ -111,6 +113,7 @@ public class GameManager : MonoBehaviour
         }
         Queue<Pipe> check = new Queue<Pipe>();
         HashSet<Pipe> finished = new HashSet<Pipe>();
+
         foreach (var pipe in startPipes)
         {
             check.Enqueue(pipe);
@@ -169,6 +172,9 @@ public class GameManager : MonoBehaviour
         if (currentLevelIndex < levelScenes.Length - 1)
         {
             currentLevelIndex++;
+            Debug.Log("Before IncreaseScore: " + ScoreManager.score);
+            scoreManager.IncreaseScore(50);
+            Debug.Log("Before IncreaseScore: " + ScoreManager.score);
             SceneManager.LoadScene(levelScenes[currentLevelIndex]);
         }
         else
