@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
 
     public string[] levelScenes = {
         "Level_1",
-        "Level_2"
+        "Level_2",
+        "Level_3"
     };
 
 
@@ -28,6 +29,15 @@ public class GameManager : MonoBehaviour
         gameFinished = false;
         scoreManager = new ScoreManager();
         SpawnLevel();
+
+        if (FindObjectsOfType<GameManager>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     private void SpawnLevel()

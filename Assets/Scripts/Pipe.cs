@@ -33,7 +33,7 @@ public class Pipe : MonoBehaviour
         }
         else
         {
-            rotation = Random.Range(minRotation, maxRotation + 1);
+            //rotation = Random.Range(minRotation, maxRotation + 1);
         }
         currentPipe.transform.eulerAngles = new Vector3(0, 0, rotation * rotationMultiplier);
 
